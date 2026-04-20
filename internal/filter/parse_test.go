@@ -67,3 +67,26 @@ func TestParseRules_EmptyFieldName(t *testing.T) {
 		}
 	}
 }
+
+func TestParseRules_MultipleRules(t *testing.T) {
+	rules, err := filter.ParseRules([]string{"level=error", "msg~timeout", "trace_id?"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(rules) != 3 {
+		t.Fatalf("expected 3 rules, got %d", len(rules))
+	}
+	expected := []struct {
+		field, op, value string
+	}{
+		{"level", "eq", "error"},
+		{"msg", "contains", "timeout"},
+		{"trace_id", "exists", ""},
+	}
+	for i, e := range expected {
+		r := rules[i]
+		if r.Field != e.field || r.Operator != e.op || r.Value != e.value {
+			t.Errorf("rule[%d]: expected {%s %s %s}, got %+v", i, e.field, e.op, e.value, r)
+		}
+	}
+}
