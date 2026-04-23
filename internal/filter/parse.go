@@ -58,3 +58,14 @@ func parseExpr(expr string) (Rule, error) {
 
 	return Rule{}, fmt.Errorf("unrecognised operator; use =, ~, or ? suffix")
 }
+
+// MustParseRules is like ParseRules but panics on error.
+// It is intended for use in tests or program initialisation where
+// filter expressions are known to be valid at compile time.
+func MustParseRules(exprs []string) []Rule {
+	rules, err := ParseRules(exprs)
+	if err != nil {
+		panic(err)
+	}
+	return rules
+}
