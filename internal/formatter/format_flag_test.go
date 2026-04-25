@@ -31,9 +31,14 @@ func TestFormatFlag_SetValid(t *testing.T) {
 }
 
 func TestFormatFlag_SetInvalid(t *testing.T) {
-	var flag formatter.FormatFlag
-	if err := flag.Set("xml"); err == nil {
-		t.Error("expected error for unknown format, got nil")
+	invalidInputs := []string{"xml", "yaml", "", "  ", "prettyjson"}
+	for _, input := range invalidInputs {
+		t.Run(input, func(t *testing.T) {
+			var flag formatter.FormatFlag
+			if err := flag.Set(input); err == nil {
+				t.Errorf("expected error for unknown format %q, got nil", input)
+			}
+		})
 	}
 }
 
