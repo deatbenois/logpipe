@@ -118,3 +118,18 @@ func levelColor(level string) string {
 		return fmt.Sprintf("\033[32m%-5s\033[0m", strings.ToUpper(level))
 	}
 }
+
+// ParseFormat converts a string to a Format value. It returns FormatRaw and an
+// error if the string does not match a known format.
+func ParseFormat(s string) (Format, error) {
+	switch Format(strings.ToLower(s)) {
+	case FormatPretty:
+		return FormatPretty, nil
+	case FormatJSON:
+		return FormatJSON, nil
+	case FormatRaw:
+		return FormatRaw, nil
+	default:
+		return FormatRaw, fmt.Errorf("unknown format %q: must be one of pretty, json, raw", s)
+	}
+}
